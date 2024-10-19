@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import Mainrouter from "./routes/main.routes.js";
 dotenv.config();
 async function connectToDatabase() {
     try {
@@ -17,6 +18,7 @@ async function main(PORT) {
     const app = express();
     app.use(cors());
     app.use(bodyParser.json());
+    app.use("/", Mainrouter);
     connectToDatabase().then(() => {
         app.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);
