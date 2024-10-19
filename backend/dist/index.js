@@ -4,6 +4,8 @@ import cors from "cors";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import Mainrouter from "./routes/main.routes.js";
+import HealthRoute from "./routes/health.routes.js";
+import AuthRoute from "./routes/auth.routes.js";
 dotenv.config();
 async function connectToDatabase() {
     try {
@@ -14,11 +16,18 @@ async function connectToDatabase() {
         console.error("Error connecting to database: ", error);
     }
 }
+const corsOptions = {
+    origin: "*",
+    optionsSuccessStatus: 200,
+    methods: "GET, POST, PUT, DELETE"
+};
 async function main(PORT) {
     const app = express();
-    app.use(cors());
+    app.use(cors(corsOptions));
     app.use(bodyParser.json());
-    app.use("/", Mainrouter);
+    app.use("/", cors(corsOptions), Mainrouter);
+    app.use("/health", HealthRoute);
+    app.use("/auth", AuthRoute);
     connectToDatabase().then(() => {
         app.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);
